@@ -309,6 +309,14 @@ License: For each use you must have a valid license purchased only from above li
                                                 <span class="menu-title">{% translate "Talent" %}s</span>
                                             </a>
                                         </div>
+                                        <div class="menu-item">
+                                            <a class="menu-link {% block menu_cosmetics %}{% endblock %}" href="{% url 'cosmetics' %}">
+                                                                                                <span class="menu-bullet">
+                                                                                                        <span class="bullet bullet-dot"></span>
+                                                                                                </span>
+                                                <span class="menu-title">{% translate "Cosmetics" %}s</span>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="menu-item">
@@ -610,7 +618,7 @@ License: For each use you must have a valid license purchased only from above li
                             <!--begin::Copyright-->
                             <div class="text-dark order-2 order-md-1">
                                 <span class="text-muted fw-bold me-1">2021©</span>
-                                Mist Legacy DB v0.6.2 - All visuals are property of&nbsp;<a href="https://virtys.com/" target="_blank" class="kt-link">Virtys</a>. Thanks to the community for their help. Contact : Nacros on official ML Discord
+                                Mist Legacy DB v0.6.2 - All visuals are property of&nbsp;<a href="https://virtys.com/" target="_blank" class="kt-link">Virtys</a>. Thanks to the community for their help. Contact : Botanic on official ML Discord
                             </div>
                             <!--end::Copyright-->
                         </div>
@@ -672,6 +680,8 @@ License: For each use you must have a valid license purchased only from above li
             boss = {{ geojson_boss|geojsonfeature:"map_poi"|safe }};
             somberseason = {{ geojson_somberseason|geojsonfeature:"map_poi"|safe }};
             gatheringpoints = {{ geojson_gatheringpoints|geojsonfeature:"map_poi,icon_url"|safe }};
+            questpoints = {{ geojson_questitemlocations|geojsonfeature:"map_poi,icon_url"|safe }};
+
             let mymap;
 
             function onEachFeature(feature, layer) {
@@ -698,6 +708,22 @@ License: For each use you must have a valid license purchased only from above li
                             iconAnchor: [17,30],
                             popupAnchor: [0,-35]
                         }));
+                    }
+                }
+            }
+
+            function onEachFeatureQL(feature, layer) {
+                if (feature.properties && feature.properties.map_poi) {
+                    layer.bindPopup(feature.properties.map_poi);
+                    if (feature.properties.icon_url) {
+                        layer.getLayers().forEach(function(marker) {
+                        marker.setIcon(new L.Icon({
+                            iconUrl: feature.properties.icon_url,
+                            iconSize: [35, 35],
+                            iconAnchor: [17,30],
+                            popupAnchor: [0,-35]
+                        }))
+                        })
                     }
                 }
             }
@@ -781,6 +807,7 @@ License: For each use you must have a valid license purchased only from above li
                 const layerElixirs = L.geoJson(elixirs, {onEachFeature: onEachFeatureElixir}).addTo(mymap);
                 const layerBoss = L.geoJson(boss, {onEachFeature: onEachFeatureBOSS}).addTo(mymap);
                 const layerGatheringPoints = L.geoJson(gatheringpoints, {onEachFeature: onEachFeatureGP}).addTo(mymap);
+                const layerQuestItemLocations = L.geoJson(questpoints, {onEachFeature: onEachFeatureQL}).addTo(mymap);
                 var baseMaps = {};
                 var overlayMaps = {
                     "{% translate "Locations" %}": layerLocations,
@@ -789,6 +816,7 @@ License: For each use you must have a valid license purchased only from above li
                     "{% translate "Elixirs" %}": layerElixirs,
                     "{% translate "Gathering Points" %}": layerGatheringPoints,
                     "{% translate "Boss" %}": layerBoss,
+                    "{% translate "Quest Item Locations" %}": layerQuestItemLocations,
                     "{% translate "Somberseason" %}": layerSomberseason
                 };
                 L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(mymap);

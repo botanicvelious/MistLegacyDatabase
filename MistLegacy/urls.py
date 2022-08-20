@@ -26,7 +26,7 @@ urlpatterns = i18n_patterns(
     path('books', books, name='books'),
     path('recipes', recipes, name='recipes'),
     path('talents', talents, name='talents'),
-
+    path('cosmetics', cosmetics, name='cosmetics'),
 
     path('land/<int:pk>', land, name='land'),
     path('adventure/<int:pk>', adventure, name='adventure'),

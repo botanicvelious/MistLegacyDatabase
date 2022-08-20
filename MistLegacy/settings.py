@@ -80,7 +80,8 @@ TEMPLATES = [
                 'front.context_processor.geojson_elixirs',
                 'front.context_processor.geojson_gatheringpoints',
                 'front.context_processor.geojson_somberseason',
-                'front.context_processor.geojson_boss'
+                'front.context_processor.geojson_boss',
+                'front.context_processor.geojson_questitemlocations',
             ],
         },
     },
@@ -162,9 +163,9 @@ LOCALE_PATHS = [
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (-5.0, -57.0),
     'DEFAULT_ZOOM': 5,
-    'MIN_ZOOM': 5,
+    'MIN_ZOOM': 4,
     'MAX_ZOOM': 8,
-    'TILES': '/static/map/{z}/{y}/{x}.jpg',
+    'TILES': [('Map', '/static/map/{z}/{y}/{x}.jpg', {'errorTileUrl':'/static/map/blank.png'})],
     'ATTRIBUTION_PREFIX': '&copy; Virtys',
     'SCALE': None,
     'MINIMAP': False,
@@ -177,6 +178,10 @@ LEAFLET_CONFIG = {
         'FullScreen': {
             'css': 'https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css',
             'js': 'https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js',
+            'auto-include': True,
+        },
+        'Leaflet.EdgeBuffer': {
+            'js': 'assets/mldb/map/leaflet.edgebuffer.js',
             'auto-include': True,
         },
     }

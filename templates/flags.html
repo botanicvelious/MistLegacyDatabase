@@ -43,8 +43,8 @@
                                     <tbody>
                                     {% for elem in qs %}
                                         <tr>
-                                            {% trans '-- no translation yet --' as transl %}
-                                            <th>{% if elem.coordinates %}<a data-bs-toggle="modal" data-bs-target="#modal_map" href="" data-bs-position="{{ elem.coordinates }}">{{ elem|default_if_none:transl }}</a>{% else %}{{ elem }}{% endif %}</th>
+                                            {% trans '-- no translation yet --' as transl %}                                            
+                                            <th><a id="{{ elem.id }}"></a>{% if elem.coordinates %}<a data-bs-toggle="modal" data-bs-target="#modal_map" href="" data-bs-position="{{ elem.coordinates }}">{{ elem|default_if_none:transl }}</a>{% else %}{{ elem }}{% endif %}</th>
                                             <th>
                                                 {% for item in elem.blueflagsstep_set.all %}
                                                     {% if item.adventure %}

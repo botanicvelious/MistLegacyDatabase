@@ -120,3 +120,4 @@ class MonsterTranslationOptions(TranslationOptions):
 @register(Boss)
 class BossTranslationOptions(TranslationOptions):
     fields = ('name',)
+

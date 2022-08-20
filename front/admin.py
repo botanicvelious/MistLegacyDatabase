@@ -182,3 +182,11 @@ class BossAdmin(LeafletGeoAdmin):
 @admin.register(BossWeakness)
 class BossWeaknessAdmin(admin.ModelAdmin):
     list_display = ('boss', 'magic_school', 'percent')
+
+@admin.register(QuestItemLocations)
+class QuestItemLocationsAdmin(LeafletGeoAdmin):
+    list_display = ('itemname', 'flag', 'location', 'count', 'geom', 'icon')
+
+@admin.register(Cosmetics)
+class CosmeticsAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'location')

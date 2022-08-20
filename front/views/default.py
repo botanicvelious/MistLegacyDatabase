@@ -32,7 +32,18 @@ def home(request):
 
 
 def map(request):
-    return render(request, 'map.html', context={})
+    template = "map.html"
+    context = {}
+
+    context["settings_overrides"] = {
+        "DEFAULT_CENTER": (
+            request.GET.get('y', '-5.0'),
+            request.GET.get('x', '-57'),
+        ),
+        "DEFAULT_ZOOM": request.GET.get('z', '5'),
+    }
+
+    return render(request, template, context)
 
 
 def basics(request):
@@ -173,3 +184,6 @@ def craft(request, craft=None):
     if craft:
         craft = cache.get('CRAFT_{}'.format(craft), None)
     return render(request, 'craft_other.html', context={'CRAFT_INDEX': cache.get('CRAFT_INDEX'), 'CRAFT': craft})
+
+def cosmetics(request):
+    return render(request, 'cosmetics.html', context={'cosmetics': Cosmetics.objects.all()})

@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from djgeojson.fields import PointField, PolygonField
+from djgeojson.fields import PointField, PolygonField, MultiPointField
 from django.utils.translation import gettext as _
 from filer.fields.image import FilerImageField
 from .toolbox import centroid
@@ -869,3 +869,73 @@ class BlueFlagsStep(models.Model):
     monster5 = models.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster5")
     difficulty = models.IntegerField(null=True, blank=True)
     percent = models.IntegerField(default=0, null=False, blank=False)
+
+class QuestItemLocations(models.Model):
+    itemname = models.CharField(max_length=64, blank=False, null=False)
+    flag = models.ForeignKey(BlueFlags, null=True, blank=True, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    count = models.IntegerField(default=5, null=False, blank=False)
+    geom = MultiPointField(blank=True, null=True)
+    icon = FilerImageField(blank=True, null=True, related_name="quest_icon", on_delete=models.CASCADE)
+
+    def __str__(self):
+        if self.flag:
+            return self.flag.name
+        elif self.location:
+            return self.location.name
+        else:
+            return _('-- no translation yet --')
+
+    class Meta:
+        ordering = ["flag"]
+
+    @property
+    def map_poi(self):
+        if self.flag:
+            tooltip = "{}<br>{} Total: {}".format(self.itemname, self.flag, self.count)
+        else:
+            tooltip = "{}<br>{} Total: {}".format(self.itemname, self.location, self.count)
+        return tooltip
+
+    @property
+    def coordinates(self):
+        if self.geom:
+            return str(self.geom['coordinates']).replace('[', '').replace(']', '').replace(' ', '')
+        else:
+            return None
+
+    @property
+    def icon_url(self):
+        if self.icon:
+            return self.icon.url
+        else:
+            return None
+
+
+class Cosmetics(models.Model):
+    name = models.CharField(max_length=64, blank=False, null=False)
+    value = models.IntegerField(default=1)
+    price = models.IntegerField(blank=True, null=True)
+    count = models.IntegerField(blank=True, null=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    npc = models.ForeignKey(NPC, on_delete=models.CASCADE, blank=True, null=True)
+    blueflag = models.ForeignKey('BlueFlags', on_delete=models.CASCADE, blank=True, null=True, default=None)
+    image = FilerImageField(blank=True, null=True, related_name="cosmetic_image", on_delete=models.CASCADE)
+
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('cosmetics_card', args=[str(self.id)])
+
+    def get_location(self):
+        if self.location:
+            return self.location
+        elif self.blueflag:
+            return self.blueflag
+        else:
+            return None
