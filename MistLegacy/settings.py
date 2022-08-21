@@ -44,12 +44,14 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'filer',
     'mptt',
-    'rest_framework',
+    'silk',
+#    'cachalot',
 ]
 
 MIDDLEWARE = [
+    'silk.middleware.SilkyMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+#    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -110,6 +112,16 @@ DATABASES = {
     }
 }
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+#SESSIONS_ENGINE='django.contrib.sessions.backends.cache'
+
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#        'LOCATION': '127.0.0.1:11211',
+#    }
+#}
+
 #CACHES = {
 #    'default': {
 #        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
@@ -152,7 +164,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+#STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_URL = 'static/'
 STATIC_ROOT = 'static'
 MEDIA_ROOT = 'media'
@@ -206,3 +218,8 @@ if os.path.exists(r"c:\python37"):
         MEDIA_ROOT = r'C:\Users\cantin-f\PycharmProjects\mldb\media'
     else:
         MEDIA_ROOT = r'C:\Users\Fabrice\PycharmProjects\MistLegacy\media'
+
+#SILKY_PYTHON_PROFILER = True
+SILKY_AUTHENTICATION = True  # User must login
+#SILKY_ANALYZE_QUERIES = True
+SILKY_INTERCEPT_PERCENT=0

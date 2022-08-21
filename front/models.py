@@ -1,3 +1,4 @@
+import auto_prefetch
 from django.db import models
 from django.urls import reverse
 from djgeojson.fields import PointField, PolygonField, MultiPointField
@@ -16,7 +17,7 @@ COOLDOWN_CHOICES = [
 ]
 
 
-class Daytime(models.Model):
+class Daytime(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -26,7 +27,7 @@ class Daytime(models.Model):
         return self.name
 
 
-class Weapon(models.Model):
+class Weapon(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -39,7 +40,7 @@ class Weapon(models.Model):
         return reverse('weapon', args=[str(self.id)])
 
 
-class EquipmentSlot(models.Model):
+class EquipmentSlot(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -49,7 +50,7 @@ class EquipmentSlot(models.Model):
         return self.name
 
 
-class Land(models.Model):
+class Land(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -62,7 +63,7 @@ class Land(models.Model):
         return reverse('land', args=[str(self.id)])
 
 
-class Gathering(models.Model):
+class Gathering(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -75,7 +76,7 @@ class Gathering(models.Model):
         return reverse('gathering', args=[str(self.id)])
 
 
-class Adventure(models.Model):
+class Adventure(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -88,7 +89,7 @@ class Adventure(models.Model):
         return reverse('adventure', args=[str(self.id)])
 
 
-class Crafting(models.Model):
+class Crafting(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -101,7 +102,7 @@ class Crafting(models.Model):
         return reverse('crafting', args=[str(self.id)])
 
 
-class Reputation(models.Model):
+class Reputation(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -114,7 +115,7 @@ class Reputation(models.Model):
         return reverse('reputation', args=[str(self.id)])
 
 
-class Guild(models.Model):
+class Guild(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -127,9 +128,9 @@ class Guild(models.Model):
         return reverse('guild', args=[str(self.id)])
 
 
-class Region(models.Model):
+class Region(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
-    land = models.ForeignKey(Land, on_delete=models.CASCADE, blank=True, null=True)
+    land = auto_prefetch.ForeignKey(Land, on_delete=models.CASCADE, blank=True, null=True)
     land_difficulty = models.IntegerField(blank=True, null=True)
     geom = PolygonField(blank=True, null=True)
 
@@ -164,9 +165,9 @@ class Region(models.Model):
             return None
 
 
-class Location(models.Model):
+class Location(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+    region = auto_prefetch.ForeignKey(Region, on_delete=models.CASCADE)
     exploration = models.IntegerField(blank=True, null=True)
     quest = models.BooleanField(blank=True, null=True, default=False)
     geom = PointField(blank=True, null=True)
@@ -241,12 +242,12 @@ class Location(models.Model):
             return None
 
 
-class Companion(models.Model):
+class Companion(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     lvl = models.IntegerField(blank=True, null=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
     quest = models.BooleanField(blank=True, null=True, default=False)
-    weapon = models.ForeignKey(Weapon, on_delete=models.CASCADE, blank=True, null=True)
+    weapon = auto_prefetch.ForeignKey(Weapon, on_delete=models.CASCADE, blank=True, null=True)
     weapon_lvl = models.IntegerField(blank=True, null=True)
     comfort = models.IntegerField(blank=True, null=True)
     convenience = models.IntegerField(blank=True, null=True)
@@ -264,19 +265,19 @@ class Companion(models.Model):
             return _('-- no translation yet --')
 
 
-class CompanionSkill(models.Model):
-    companion = models.ForeignKey(Companion, null=False, blank=False, on_delete=models.CASCADE)
-    adventure = models.ForeignKey(Adventure, null=True, blank=True, on_delete=models.CASCADE)
-    gathering = models.ForeignKey(Gathering, null=True, blank=True, on_delete=models.CASCADE, default=None)
-    land = models.ForeignKey(Land, null=True, blank=True, on_delete=models.CASCADE, default=None)
-    crafting = models.ForeignKey(Crafting, null=True, blank=True, on_delete=models.CASCADE, default=None)
+class CompanionSkill(auto_prefetch.Model):
+    companion = auto_prefetch.ForeignKey(Companion, null=False, blank=False, on_delete=models.CASCADE)
+    adventure = auto_prefetch.ForeignKey(Adventure, null=True, blank=True, on_delete=models.CASCADE)
+    gathering = auto_prefetch.ForeignKey(Gathering, null=True, blank=True, on_delete=models.CASCADE, default=None)
+    land = auto_prefetch.ForeignKey(Land, null=True, blank=True, on_delete=models.CASCADE, default=None)
+    crafting = auto_prefetch.ForeignKey(Crafting, null=True, blank=True, on_delete=models.CASCADE, default=None)
     bonus = models.IntegerField(null=False, blank=False)
 
 
-class NPC(models.Model):
+class NPC(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
-    daytime = models.ForeignKey(Daytime, on_delete=models.CASCADE, blank=True, null=True)
+    location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    daytime = auto_prefetch.ForeignKey(Daytime, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         ordering = ["name"]
@@ -288,20 +289,20 @@ class NPC(models.Model):
             return _('-- no translation yet --')
 
 
-class Recipe(models.Model):
+class Recipe(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     price = models.IntegerField(blank=True, null=True)
-    reputation = models.ForeignKey(Reputation, on_delete=models.CASCADE, blank=True, null=True)
-    guild = models.ForeignKey(Guild, on_delete=models.CASCADE, blank=True, null=True)
+    reputation = auto_prefetch.ForeignKey(Reputation, on_delete=models.CASCADE, blank=True, null=True)
+    guild = auto_prefetch.ForeignKey(Guild, on_delete=models.CASCADE, blank=True, null=True)
     reputation_guild_value = models.IntegerField(blank=True, null=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
-    npc = models.ForeignKey(NPC, on_delete=models.CASCADE, blank=True, null=True)
+    location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    npc = auto_prefetch.ForeignKey(NPC, on_delete=models.CASCADE, blank=True, null=True)
     building = models.BooleanField(default=False)
-    equipment_slot = models.ForeignKey(EquipmentSlot, on_delete=models.CASCADE, blank=True, null=True,
+    equipment_slot = auto_prefetch.ForeignKey(EquipmentSlot, on_delete=models.CASCADE, blank=True, null=True,
                                        help_text="If not a building")
-    weapon = models.ForeignKey(Weapon, on_delete=models.CASCADE, blank=True, null=True,
+    weapon = auto_prefetch.ForeignKey(Weapon, on_delete=models.CASCADE, blank=True, null=True,
                                help_text="If equipment_slot is weapon")
-    blueflag = models.ForeignKey('BlueFlags', on_delete=models.CASCADE, blank=True, null=True, default=None)
+    blueflag = auto_prefetch.ForeignKey('BlueFlags', on_delete=models.CASCADE, blank=True, null=True, default=None)
 
     class Meta:
         ordering = ["name"]
@@ -330,61 +331,12 @@ class Recipe(models.Model):
             return None
 
 
-class Book(models.Model):
-    value = models.IntegerField(default=1)
-    price = models.IntegerField(blank=True, null=True)
-    count = models.IntegerField(blank=True, null=True)
-    gathering = models.ForeignKey(Gathering, on_delete=models.CASCADE, blank=True, null=True)
-    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE, blank=True, null=True)
-    crafting = models.ForeignKey(Crafting, on_delete=models.CASCADE, blank=True, null=True)
-    land = models.ForeignKey(Land, on_delete=models.CASCADE, blank=True, null=True)
-    weapon = models.ForeignKey(Weapon, on_delete=models.CASCADE, blank=True, null=True)
-    reputation = models.ForeignKey(Reputation, on_delete=models.CASCADE, blank=True, null=True)
-    guild = models.ForeignKey(Guild, on_delete=models.CASCADE, blank=True, null=True)
-    reputation_guild_value = models.IntegerField(blank=True, null=True, default=0)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
-    npc = models.ForeignKey(NPC, on_delete=models.CASCADE, blank=True, null=True)
-    blueflag = models.ForeignKey('BlueFlags', on_delete=models.CASCADE, blank=True, null=True, default=None)
-
-    class Meta:
-        ordering = ["gathering", "adventure", "crafting", "land", "weapon"]
-
-    def __str__(self):
-        if self.gathering:
-            return '{} +{}'.format(self.gathering, self.value)
-        elif self.adventure:
-            return '{} +{}'.format(self.adventure, self.value)
-        elif self.crafting:
-            return '{} +{}'.format(self.crafting, self.value)
-        elif self.land:
-            return '{} +{}'.format(self.land, self.value)
-        elif self.weapon:
-            return '{} +{}'.format(self.weapon, self.value)
-
-    def get_absolute_url(self):
-        return reverse('book_card', args=[str(self.id)])
-
-    def get_reputation(self):
-        if self.reputation:
-            return '{} {}'.format(self.reputation, self.reputation_guild_value)
-        elif self.guild:
-            return '{} {}'.format(self.guild, self.reputation_guild_value)
-
-    def get_location(self):
-        if self.location:
-            return self.location
-        elif self.blueflag:
-            return self.blueflag
-        else:
-            return None
-
-
-class Training(models.Model):
+class Training(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
-    adventure = models.ForeignKey(Adventure, on_delete=models.CASCADE)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    adventure = auto_prefetch.ForeignKey(Adventure, on_delete=models.CASCADE)
+    location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
     difficulty = models.IntegerField(blank=True, null=True)
-    daytime = models.ForeignKey(Daytime, on_delete=models.CASCADE, blank=True, null=True, default=3)
+    daytime = auto_prefetch.ForeignKey(Daytime, on_delete=models.CASCADE, blank=True, null=True, default=3)
 
     class Meta:
         ordering = ["name"]
@@ -396,15 +348,15 @@ class Training(models.Model):
             return _('-- no translation yet --')
 
 
-class Talent(models.Model):
+class Talent(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     level = models.IntegerField(default=1)
     price = models.IntegerField(blank=True, null=True)
-    reputation = models.ForeignKey(Reputation, on_delete=models.CASCADE, blank=True, null=True)
-    guild = models.ForeignKey(Guild, on_delete=models.CASCADE, blank=True, null=True)
+    reputation = auto_prefetch.ForeignKey(Reputation, on_delete=models.CASCADE, blank=True, null=True)
+    guild = auto_prefetch.ForeignKey(Guild, on_delete=models.CASCADE, blank=True, null=True)
     reputation_guild_value = models.IntegerField(blank=True, null=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
-    npc = models.ForeignKey(NPC, on_delete=models.CASCADE, blank=True, null=True)
+    location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    npc = auto_prefetch.ForeignKey(NPC, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         ordering = ["name"]
@@ -425,9 +377,9 @@ class Talent(models.Model):
             return '{} {}'.format(self.guild, self.reputation_guild_value)
 
 
-class MaterialType(models.Model):
+class MaterialType(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
-    gathering = models.ForeignKey(Gathering, on_delete=models.CASCADE, blank=True, null=True)
+    gathering = auto_prefetch.ForeignKey(Gathering, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -436,7 +388,7 @@ class MaterialType(models.Model):
         ordering = ["name"]
 
 
-class ComponentType(models.Model):
+class ComponentType(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     def __str__(self):
@@ -446,9 +398,9 @@ class ComponentType(models.Model):
         ordering = ["name"]
 
 
-class Material(models.Model):
+class Material(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
-    material_type = models.ForeignKey(MaterialType, on_delete=models.CASCADE, blank=False, null=False)
+    material_type = auto_prefetch.ForeignKey(MaterialType, on_delete=models.CASCADE, blank=False, null=False)
     level = models.IntegerField(blank=False, null=False)
     density = models.IntegerField(default=0)
     purity = models.IntegerField(default=0)
@@ -496,9 +448,9 @@ class Material(models.Model):
             return _('-- no translation yet --')
 
 
-class Component(models.Model):
+class Component(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
-    component_type = models.ForeignKey(ComponentType, on_delete=models.CASCADE, blank=False, null=False)
+    component_type = auto_prefetch.ForeignKey(ComponentType, on_delete=models.CASCADE, blank=False, null=False)
     level = models.IntegerField(blank=False, null=False)
     lithram = models.IntegerField(default=0)
     magnam = models.IntegerField(default=0)
@@ -545,7 +497,7 @@ class Component(models.Model):
             return _('-- no translation yet --')
 
 
-class Plant(models.Model):
+class Plant(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     level = models.IntegerField(blank=False, null=False)
     activator = models.IntegerField(default=0)
@@ -595,7 +547,7 @@ class Plant(models.Model):
             return _('-- no translation yet --')
 
 
-class BlueFlags(models.Model):
+class BlueFlags(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     geom = PointField(blank=True, null=True)
     icon = FilerImageField(blank=True, null=True, related_name="blueflag_icon", on_delete=models.CASCADE)
@@ -632,17 +584,20 @@ class BlueFlags(models.Model):
                         tooltip = tooltip + '{} Level: {}</br>'.format(step.monster5, Monster.objects.get(id=step.monster5.id).lvl)
 
         tooltip = tooltip + '</br>{}(s):</br>'.format(_("Reward"))
-        if self.blueflagsreward_set.all().exists():
-            for reward in self.blueflagsreward_set.all():
+        rewards = self.blueflagsreward_set.all()
+        if rewards is not None:
+            for reward in rewards:
                 if reward.number is not None:
                     tooltip = tooltip + '{} ({})</br>'.format(reward.__str__(), reward.number)
                 else:
                     tooltip = tooltip + '{}</br>'.format(reward.__str__())
-        if self.book_set.all().exists():
-            for book in self.book_set.all():
+        books = self.book_set.all()
+        if books is not None:
+            for book in books:
                 tooltip = tooltip + '{} {}</br>'.format(_("Book"), book.__str__())
-        if self.recipe_set.all().exists():
-            for recipe in self.recipe_set.all():
+        recipes = self.recipe_set.all()
+        if recipes is not None:
+            for recipe in recipes:
                 tooltip = tooltip + '{} {}</br>'.format(_("Recipe"), recipe.__str__())
         tooltip = tooltip + '</p>'
         return tooltip
@@ -664,11 +619,11 @@ class BlueFlags(models.Model):
 
 
 
-class BlueFlagsReward(models.Model):
-    flag = models.ForeignKey(BlueFlags, null=False, blank=False, on_delete=models.CASCADE)
-    material = models.ForeignKey(Material, null=True, blank=True, on_delete=models.CASCADE)
-    component = models.ForeignKey(Component, null=True, blank=True, on_delete=models.CASCADE)
-    plant = models.ForeignKey(Plant, null=True, blank=True, on_delete=models.CASCADE)
+class BlueFlagsReward(auto_prefetch.Model):
+    flag = auto_prefetch.ForeignKey(BlueFlags, null=False, blank=False, on_delete=models.CASCADE)
+    material = auto_prefetch.ForeignKey(Material, null=True, blank=True, on_delete=models.CASCADE)
+    component = auto_prefetch.ForeignKey(Component, null=True, blank=True, on_delete=models.CASCADE)
+    plant = auto_prefetch.ForeignKey(Plant, null=True, blank=True, on_delete=models.CASCADE)
     number = models.IntegerField(blank=True, null=True)
     notes = models.CharField(max_length=1024, blank=True)
 
@@ -686,7 +641,7 @@ class BlueFlagsReward(models.Model):
             return _('-- no translation yet --')
 
 
-class Elixir(models.Model):
+class Elixir(auto_prefetch.Model):
     geom = PointField(blank=True, null=True)
 
     def __str__(self):
@@ -704,9 +659,9 @@ class Elixir(models.Model):
             return None
 
 
-class GatheringPoint(models.Model):
-    material = models.ForeignKey(Material, null=True, blank=True, on_delete=models.CASCADE)
-    plant = models.ForeignKey(Plant, null=True, blank=True, on_delete=models.CASCADE)
+class GatheringPoint(auto_prefetch.Model):
+    material = auto_prefetch.ForeignKey(Material, null=True, blank=True, on_delete=models.CASCADE)
+    plant = auto_prefetch.ForeignKey(Plant, null=True, blank=True, on_delete=models.CASCADE)
     number = models.IntegerField(blank=True, null=True)
     geom = PointField(blank=True, null=True)
 
@@ -726,7 +681,7 @@ class GatheringPoint(models.Model):
                 tooltip = tooltip + ' ({} {})'.format(self.material.material_type.gathering.name, self.material.harvest_difficulty)
             if self.material.cooldown:
                 tooltip = tooltip + '<br/>{} : {} {}'.format(_("Cooldown"), self.material.cooldown, _("hours"))
-        if self.plant:
+        elif self.plant:
             tooltip = '{} x {}'.format(self.plant.name, self.number)
             tooltip = tooltip + ' ({} {})'.format(_("Botany"), self.plant.harvest_difficulty)
             if self.plant.cooldown:
@@ -750,7 +705,7 @@ class GatheringPoint(models.Model):
             return None
 
 
-class Guide(models.Model):
+class Guide(auto_prefetch.Model):
     name = models.CharField(max_length=256, blank=True, null=True)
     link = models.CharField(max_length=256, blank=True, null=True)
     author = models.CharField(max_length=64, blank=True, null=True)
@@ -760,7 +715,7 @@ class Guide(models.Model):
         ordering = ["name"]
 
 
-class Somberseason(models.Model):
+class Somberseason(auto_prefetch.Model):
     clue = models.CharField(max_length=64, blank=True, null=True)
     geom = PointField(blank=True, null=True)
 
@@ -772,7 +727,7 @@ class Somberseason(models.Model):
             return _('Always')
 
 
-class MagicSchool(models.Model):
+class MagicSchool(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
@@ -781,15 +736,15 @@ class MagicSchool(models.Model):
     def __str__(self):
         return self.name
 
-class Monster(models.Model):
+class Monster(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     lvl = models.IntegerField(blank=True, null=True)
     life = models.IntegerField(blank=True, null=True)
     stamina = models.IntegerField(blank=True, null=True)
     attack = models.IntegerField(blank=True, null=True)
     armor = models.IntegerField(blank=True, null=True)
-    substance = models.ForeignKey(Component, blank=True, null=True, on_delete=models.CASCADE)
-    region = models.ForeignKey(Region, blank=True, null=True, on_delete=models.CASCADE)
+    substance = auto_prefetch.ForeignKey(Component, blank=True, null=True, on_delete=models.CASCADE)
+    region = auto_prefetch.ForeignKey(Region, blank=True, null=True, on_delete=models.CASCADE)
     image = FilerImageField(blank=True, null=True, related_name="monster_image", on_delete=models.CASCADE)
     elite = models.BooleanField(default=False)
 
@@ -802,10 +757,16 @@ class Monster(models.Model):
         else:
             return _('-- no translation yet --')
 
+    def get_region(self):
+        if self.region:
+            return self.region
+        else:
+            return None
 
-class MonsterWeakness(models.Model):
-    monster = models.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE)
-    magic_school = models.ForeignKey(MagicSchool, blank=True, null=True, on_delete=models.CASCADE)
+
+class MonsterWeakness(auto_prefetch.Model):
+    monster = auto_prefetch.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE)
+    magic_school = auto_prefetch.ForeignKey(MagicSchool, blank=True, null=True, on_delete=models.CASCADE)
     bonus = models.CharField(max_length=1, blank=True, null=True, choices=WEAKNESS_CHOICES, default='+')
     percent = models.IntegerField(blank=True, null=True)
 
@@ -813,14 +774,14 @@ class MonsterWeakness(models.Model):
         return self.magic_school.name
 
 
-class Boss(models.Model):
+class Boss(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     lvl = models.IntegerField(blank=True, null=True)
     life = models.IntegerField(blank=True, null=True)
     stamina = models.IntegerField(blank=True, null=True)
     attack = models.IntegerField(blank=True, null=True)
     armor = models.IntegerField(blank=True, null=True)
-    substance = models.ForeignKey(Component, blank=True, null=True, on_delete=models.CASCADE)
+    substance = auto_prefetch.ForeignKey(Component, blank=True, null=True, on_delete=models.CASCADE)
     geom = PointField(blank=True, null=True)
     cooldown = models.CharField(max_length=16, blank=True, null=True, choices=COOLDOWN_CHOICES, default='Daily')
     image = FilerImageField(blank=True, null=True, related_name="boss_image", on_delete=models.CASCADE)
@@ -847,33 +808,33 @@ class Boss(models.Model):
             return None
 
 
-class BossWeakness(models.Model):
-    boss = models.ForeignKey(Boss, blank=True, null=True, on_delete=models.CASCADE)
-    magic_school = models.ForeignKey(MagicSchool, blank=True, null=True, on_delete=models.CASCADE)
+class BossWeakness(auto_prefetch.Model):
+    boss = auto_prefetch.ForeignKey(Boss, blank=True, null=True, on_delete=models.CASCADE)
+    magic_school = auto_prefetch.ForeignKey(MagicSchool, blank=True, null=True, on_delete=models.CASCADE)
     bonus = models.CharField(max_length=1, blank=True, null=True, choices=WEAKNESS_CHOICES, default='+')
     percent = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.magic_school.name
 
-class BlueFlagsStep(models.Model):
-    flag = models.ForeignKey(BlueFlags, null=False, blank=False, on_delete=models.CASCADE)
-    adventure = models.ForeignKey(Adventure, null=True, blank=True, on_delete=models.CASCADE)
-    weapon = models.ForeignKey(Weapon, null=True, blank=True, on_delete=models.CASCADE, default=None)
-    gathering = models.ForeignKey(Gathering, null=True, blank=True, on_delete=models.CASCADE, default=None)
+class BlueFlagsStep(auto_prefetch.Model):
+    flag = auto_prefetch.ForeignKey(BlueFlags, null=False, blank=False, on_delete=models.CASCADE)
+    adventure = auto_prefetch.ForeignKey(Adventure, null=True, blank=True, on_delete=models.CASCADE)
+    weapon = auto_prefetch.ForeignKey(Weapon, null=True, blank=True, on_delete=models.CASCADE, default=None)
+    gathering = auto_prefetch.ForeignKey(Gathering, null=True, blank=True, on_delete=models.CASCADE, default=None)
     is_fight = models.BooleanField(blank=True, null=True, default=False)
-    monster1 = models.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster1")
-    monster2 = models.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster2")
-    monster3 = models.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster3")
-    monster4 = models.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster4")
-    monster5 = models.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster5")
+    monster1 = auto_prefetch.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster1")
+    monster2 = auto_prefetch.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster2")
+    monster3 = auto_prefetch.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster3")
+    monster4 = auto_prefetch.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster4")
+    monster5 = auto_prefetch.ForeignKey(Monster, blank=True, null=True, on_delete=models.CASCADE, default=None, related_name="monster5")
     difficulty = models.IntegerField(null=True, blank=True)
     percent = models.IntegerField(default=0, null=False, blank=False)
 
-class QuestItemLocations(models.Model):
+class QuestItemLocations(auto_prefetch.Model):
     itemname = models.CharField(max_length=64, blank=False, null=False)
-    flag = models.ForeignKey(BlueFlags, null=True, blank=True, on_delete=models.CASCADE)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    flag = auto_prefetch.ForeignKey(BlueFlags, null=True, blank=True, on_delete=models.CASCADE)
+    location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
     count = models.IntegerField(default=5, null=False, blank=False)
     geom = MultiPointField(blank=True, null=True)
     icon = FilerImageField(blank=True, null=True, related_name="quest_icon", on_delete=models.CASCADE)
@@ -912,14 +873,14 @@ class QuestItemLocations(models.Model):
             return None
 
 
-class Cosmetics(models.Model):
+class Cosmetics(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=False, null=False)
     value = models.IntegerField(default=1)
     price = models.IntegerField(blank=True, null=True)
     count = models.IntegerField(blank=True, null=True)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
-    npc = models.ForeignKey(NPC, on_delete=models.CASCADE, blank=True, null=True)
-    blueflag = models.ForeignKey('BlueFlags', on_delete=models.CASCADE, blank=True, null=True, default=None)
+    location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    npc = auto_prefetch.ForeignKey(NPC, on_delete=models.CASCADE, blank=True, null=True)
+    blueflag = auto_prefetch.ForeignKey('BlueFlags', on_delete=models.CASCADE, blank=True, null=True, default=None)
     image = FilerImageField(blank=True, null=True, related_name="cosmetic_image", on_delete=models.CASCADE)
 
 
@@ -931,6 +892,55 @@ class Cosmetics(models.Model):
 
     def get_absolute_url(self):
         return reverse('cosmetics_card', args=[str(self.id)])
+
+    def get_location(self):
+        if self.location:
+            return self.location
+        elif self.blueflag:
+            return self.blueflag
+        else:
+            return None
+
+
+class Book(auto_prefetch.Model):
+    value = models.IntegerField(default=1)
+    price = models.IntegerField(blank=True, null=True)
+    count = models.IntegerField(blank=True, null=True)
+    gathering = auto_prefetch.ForeignKey(Gathering, on_delete=models.CASCADE, blank=True, null=True)
+    adventure = auto_prefetch.ForeignKey(Adventure, on_delete=models.CASCADE, blank=True, null=True)
+    crafting = auto_prefetch.ForeignKey(Crafting, on_delete=models.CASCADE, blank=True, null=True)
+    land = auto_prefetch.ForeignKey(Land, on_delete=models.CASCADE, blank=True, null=True)
+    weapon = auto_prefetch.ForeignKey(Weapon, on_delete=models.CASCADE, blank=True, null=True)
+    reputation = auto_prefetch.ForeignKey(Reputation, on_delete=models.CASCADE, blank=True, null=True)
+    guild = auto_prefetch.ForeignKey(Guild, on_delete=models.CASCADE, blank=True, null=True)
+    reputation_guild_value = models.IntegerField(blank=True, null=True, default=0)
+    location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    npc = auto_prefetch.ForeignKey(NPC, on_delete=models.CASCADE, blank=True, null=True)
+    blueflag = auto_prefetch.ForeignKey(BlueFlags, on_delete=models.CASCADE, blank=True, null=True, default=None)
+
+    class Meta:
+        ordering = ["gathering", "adventure", "crafting", "land", "weapon"]
+
+    def __str__(self):
+        if self.gathering:
+            return '{} +{}'.format(self.gathering, self.value)
+        elif self.adventure:
+            return '{} +{}'.format(self.adventure, self.value)
+        elif self.crafting:
+            return '{} +{}'.format(self.crafting, self.value)
+        elif self.land:
+            return '{} +{}'.format(self.land, self.value)
+        elif self.weapon:
+            return '{} +{}'.format(self.weapon, self.value)
+
+    def get_absolute_url(self):
+        return reverse('book_card', args=[str(self.id)])
+
+    def get_reputation(self):
+        if self.reputation:
+            return '{} {}'.format(self.reputation, self.reputation_guild_value)
+        elif self.guild:
+            return '{} {}'.format(self.guild, self.reputation_guild_value)
 
     def get_location(self):
         if self.location:

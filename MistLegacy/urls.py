@@ -4,9 +4,11 @@ from front.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
-
+from django.conf.urls import include
 
 urlpatterns = i18n_patterns(
+    path('silk/', include('silk.urls', namespace='silk')),
+
     path('', map, name='home'),
     path('set_lang/<str:lang>', set_lang, name="set_lang"),
     path('clear_cache/', clear_cache),
