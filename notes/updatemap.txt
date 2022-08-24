@@ -1,0 +1,5 @@
+magick mogrify -format png -gravity south -chop 0x32 *.png
+magick mogrify -format png -gravity east -chop 32x0 *.png
+///update image.txt to correct values
+magick montage -mode concatenate -tile 40x25 @image.txt final.png
+vips.exe dzsave final.png xxx --layout google --background 0 --centre --suffix .jpg[Q=90][background=0 0 0]
