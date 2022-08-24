@@ -2,7 +2,7 @@ from .models import Location, Region, BlueFlags, Elixir, GatheringPoint, Sombers
 from django.db.models import Prefetch
 
 def geojson_locations(request):
-    return {'geojson_locations': Location.objects.prefetch_related('icon', 'region', 'companion_set', 'training_set', 'book_set', 'recipe_set', 'talent_set').all()}
+    return {'geojson_locations': Location.objects.prefetch_related('icon', 'region', 'companion_set', 'training_set', 'book_set', 'recipe_set', 'talent_set', 'boss_set').all().filter(boss__isnull=True).distinct()}
 
 
 def geojson_regions(request):
@@ -26,7 +26,7 @@ def geojson_somberseason(request):
 
 
 def geojson_boss(request):
-    return {'geojson_boss': Boss.objects.all()}
+    return {'geojson_boss': Location.objects.prefetch_related('icon', 'region', 'companion_set', 'training_set', 'book_set', 'recipe_set', 'talent_set', 'boss_set').all().filter(boss__isnull=False).distinct()}
 
 
 def geojson_questitemlocations(request):

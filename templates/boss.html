@@ -43,7 +43,7 @@
                                         <th class="kt-font-light">{% translate "Attack" %}</th>
                                         <th class="kt-font-light">{% translate "Armor" %}</th>
                                         <th class="kt-font-light">{% translate "Cooldown" %}</th>
-                                        <th class="kt-font-light">{% translate "Substance" %}</th>
+                                        <th class="kt-font-light">{% translate "Drops" %}</th>
                                         <th class="kt-font-light">{% translate "Weak/Resist" %}</th>
                                         <th class="kt-font-light">{% translate "Location" %}</th>
                                     </tr>
@@ -59,7 +59,7 @@
                                                 <th>{{ elem.attack|default_if_none:"" }}</th>
                                                 <th>{{ elem.armor|default_if_none:"" }}</th>
                                                 <th>{{ elem.cooldown|default_if_none:"" }}</th>
-                                                <th>{{ elem.substance|default_if_none:"" }}</th>
+                                                <th>{{ elem.substance|default_if_none:"" }}{{ elem.material|default_if_none:"" }}</th>
                                                 <th>
                                                     {% for item in elem.bossweakness_set.all %}
                                                         {{ item.magic_school }} {{ item.bonus }}{{ item.percent }}%</br>

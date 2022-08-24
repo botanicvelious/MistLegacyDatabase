@@ -210,6 +210,13 @@ class Location(auto_prefetch.Model):
             for spell in self.talent_set.all():
                 rep = spell.reputation or spell.guild
                 tooltip = tooltip + '{} ({}/{})</br>'.format(spell.name, rep, spell.reputation_guild_value)
+        if self.boss_set.all().exists():
+            for boss in self.boss_set.all().order_by('elite'):
+                tooltip = tooltip + '</br>{}: {}({})'.format(boss.cooldown, boss.name, boss.lvl)
+                if boss.substance is not None:
+                    tooltip = tooltip + '- {}'.format(boss.substance)
+                if boss.material is not None:
+                    tooltip = tooltip + '- {}'.format(boss.material)
         tooltip = tooltip + '</p>'
         return tooltip
 
@@ -747,6 +754,7 @@ class Monster(auto_prefetch.Model):
     region = auto_prefetch.ForeignKey(Region, blank=True, null=True, on_delete=models.CASCADE)
     image = FilerImageField(blank=True, null=True, related_name="monster_image", on_delete=models.CASCADE)
     elite = models.BooleanField(default=False)
+    drops_gold = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["name"]
@@ -782,10 +790,11 @@ class Boss(auto_prefetch.Model):
     attack = models.IntegerField(blank=True, null=True)
     armor = models.IntegerField(blank=True, null=True)
     substance = auto_prefetch.ForeignKey(Component, blank=True, null=True, on_delete=models.CASCADE)
-    geom = PointField(blank=True, null=True)
     cooldown = models.CharField(max_length=16, blank=True, null=True, choices=COOLDOWN_CHOICES, default='Daily')
     image = FilerImageField(blank=True, null=True, related_name="boss_image", on_delete=models.CASCADE)
     elite = models.BooleanField(default=False)
+    location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
+    material = auto_prefetch.ForeignKey(Material, null=True, blank=True, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["name"]
@@ -802,11 +811,17 @@ class Boss(auto_prefetch.Model):
 
     @property
     def coordinates(self):
-        if self.geom:
-            return str(self.geom['coordinates']).replace('[', '').replace(']', '').replace(' ', '')
+        if self.location:
+            return str(self.location.geom['coordinates']).replace('[', '').replace(']', '').replace(' ', '')
         else:
             return None
 
+    @property
+    def geom(self):
+        if self.location:
+            return self.location.geom
+        else:
+            return None
 
 class BossWeakness(auto_prefetch.Model):
     boss = auto_prefetch.ForeignKey(Boss, blank=True, null=True, on_delete=models.CASCADE)

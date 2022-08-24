@@ -43,6 +43,7 @@
                                         <th class="kt-font-light">{% translate "Attack" %}</th>
                                         <th class="kt-font-light">{% translate "Armor" %}</th>
                                         <th class="kt-font-light">{% translate "Substance" %}</th>
+                                        <th class="kt-font-light">{% translate "Drops Gold?" %}</th>
                                         <th class="kt-font-light">{% translate "Weak/Resist" %}</th>
                                         <th class="kt-font-light">{% translate "Region" %}</th>
                                     </tr>
@@ -58,6 +59,7 @@
                                                 <th>{{ elem.attack|default_if_none:"" }}</th>
                                                 <th>{{ elem.armor|default_if_none:"" }}</th>
                                                 <th>{{ elem.substance|default_if_none:"" }}</th>
+                                                <th>{{ elem.drops_gold }}</th>
                                                 <th>
                                                 {% for item in elem.monsterweakness_set.all %}
                                                     {{ item.magic_school }} {{ item.bonus }}{{ item.percent }}%</br>
