@@ -202,7 +202,7 @@ class Location(auto_prefetch.Model):
             for book in self.book_set.all():
                 tooltip = tooltip + '{} ({}/{})</br>'.format(book.__str__(), book.reputation, book.reputation_guild_value)
         if self.recipe_set.all().exists():
-            tooltip = tooltip + '</br>{}(s):</br>'.format(_("Recipe"))
+            tooltip = tooltip + '</br>{}(s):</br>'.format(_("Recipe & Item"))
             for recipe in self.recipe_set.all():
                 tooltip = tooltip + '{} ({}/{})</br>'.format(recipe.name, recipe.reputation, recipe.reputation_guild_value)
         if self.talent_set.all().exists():
