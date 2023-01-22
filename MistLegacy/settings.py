@@ -193,7 +193,7 @@ LEAFLET_CONFIG = {
     'MINIMAP': False,
     'PLUGINS': {
         'MousePosition': {
-            'css': '/static/assets/mldb/map/L.Control.MousePosition.css',
+            'css': 'assets/mldb/map/L.Control.MousePosition.css',
             'js': 'assets/mldb/map/L.Control.MousePosition.js',
             'auto-include': False,
         },
@@ -204,6 +204,11 @@ LEAFLET_CONFIG = {
         },
         'Leaflet.EdgeBuffer': {
             'js': 'assets/mldb/map/leaflet.edgebuffer.js',
+            'auto-include': True,
+        },
+        'leaflet-search': {
+            'css': 'assets/mldb/map/leaflet-search.css',
+            'js': 'assets/mldb/map/leaflet-search.js',
             'auto-include': True,
         },
     }

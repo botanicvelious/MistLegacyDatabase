@@ -820,6 +820,21 @@ License: For each use you must have a valid license purchased only from above li
                     "{% translate "Somberseason" %}": layerSomberseason
                 };
                 L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(mymap);
+
+	        var poiLayers = L.layerGroup([
+                	L.geoJson(gatheringpoints, {onEachFeature: onEachFeatureGP})
+        	]).addTo(map);
+
+	        L.control.search({
+        		layer: poiLayers,
+		        initial: false,
+	        	propertyName: 'name',
+        		buildTip: function(text, val) {
+		        	var type = val.layer.feature.properties.mappoi;
+			        return '<a href="#" class="'+type+'">'+text+'<b>'+type+'</b></a>';
+		        }
+	        }).addTo(map);
+
             });
 
             $('#modal_map').on('show.bs.modal', function (e) {
