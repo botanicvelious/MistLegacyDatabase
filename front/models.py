@@ -340,7 +340,8 @@ class Recipe(auto_prefetch.Model):
 
 class Training(auto_prefetch.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
-    adventure = auto_prefetch.ForeignKey(Adventure, on_delete=models.CASCADE)
+    adventure = auto_prefetch.ForeignKey(Adventure, on_delete=models.CASCADE, blank=True, null=True)
+    land = auto_prefetch.ForeignKey(Land, on_delete=models.CASCADE, blank=True, null=True)
     location = auto_prefetch.ForeignKey(Location, on_delete=models.CASCADE, blank=True, null=True)
     difficulty = models.IntegerField(blank=True, null=True)
     daytime = auto_prefetch.ForeignKey(Daytime, on_delete=models.CASCADE, blank=True, null=True, default=3)
